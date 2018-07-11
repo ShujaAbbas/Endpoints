@@ -1,0 +1,124 @@
+<html>
+
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/css/main.css">
+
+		<script type="text/javascript">
+			
+				function loginRequest(e) {
+					var formData = JSON.stringify($("#loginForm").serializeArray());
+					var jsonResult;
+					console.log("here");
+					$.ajax({
+
+						type: "POST",
+						url: "/epd/api/v1.0/login-verification",
+						data: formData,
+						async: false,
+						success: function(data){
+							console.log("here2");
+							var result = JSON.stringify(data);
+							var json = JSON.parse(result);
+
+							console.log("Hello world" + json.result);
+
+							if (json.token){
+								console.log("Trueeee");
+
+								localStorage.setItem("username", JSON.parse(formData)[0].value);
+								localStorage.setItem("token", json.token);
+
+								console.log("Name is: " + localStorage.getItem("username"));
+								console.log("Token is: " + localStorage.getItem("token"));
+
+								var pageURL = "/epd/api/v1.0/main";
+								console.log("Link: " + pageURL);
+								location.href = pageURL;
+								
+								return false;
+							}else{
+								jsonResult = json.result;
+								console.log("Falseeee");
+								return false;
+							}
+						},
+						error: function (jqXHR, exception) {
+					        var msg = '';
+					        if (jqXHR.status === 0) {
+					            msg = 'Not connect.\n Verify Network.';
+					        } else if (jqXHR.status == 404) {
+					            msg = 'Requested page not found. [404]';
+					        } else if (jqXHR.status == 500) {
+					            msg = 'Internal Server Error [500].';
+					        } else if (exception === 'parsererror') {
+					            msg = 'Requested JSON parse failed.';
+					        } else if (exception === 'timeout') {
+					            msg = 'Time out error.';
+					        } else if (exception === 'abort') {
+					            msg = 'Ajax request aborted.';
+					        } else {
+					            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+					        }
+					        $('#post').html(msg);
+					    },
+						dataType: "json",
+						contentType : "application/json"
+					});
+
+					// $("#alertDiv").html(jsonResult).css("visibility", "visible");
+				}
+		</script>
+
+	</head>
+	<body>
+
+		<script>
+			if (Modernizr.localstorage) {
+				console.log("Browser Supported");
+			} else {
+			  	console.log("Browser Not Supported");
+			}
+			var username = localStorage.getItem("name");
+			console.log("Direct name: " + username);
+			if (username !== null){
+				var pageURL = "/todo/api/v1.0/tasks?username="+localStorage.getItem("name");
+				console.log("Direct Link: " + pageURL);
+				location.href = pageURL;
+			}
+		</script>
+
+		<div class="container" style="padding: 25px;">
+
+			<div class="row main-form">
+				<div class="col-md-12">
+					<h1 style="text-align: center;">User Login</h1><br>
+					<div style="border: 1px solid white;"></div><br>
+					<form id="loginForm" onsubmit="loginRequest(); return false;">
+						<div class="form-group">
+							<label for="name">User Name</label>
+							<input class="form-control" id="name" type="text" name="name" placeholder="User name">
+						</div>
+
+						<div class="form-group">
+							<label for="otp">One Time Password</label>
+							<input class="form-control" type="password" name="otp" placeholder="Verification code">
+						</div>
+
+						<div class="form-group">
+							<input class="btn btn-primary btn-md" type="submit" value="Start">
+						</div>
+
+						<div class="form-group">
+							<div class="alert alert-danger form-control" id="alertDiv" style="visibility: hidden;"></div>	
+						</div>
+					</form>	
+				
+				</div>	
+			</div>
+		</div>
+	</body>
+</html>

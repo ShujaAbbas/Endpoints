@@ -1,0 +1,65 @@
+<html>
+
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/css/main.css">
+	
+		<script>
+			$(function(){
+				var username = localStorage.getItem("username");
+				console.log(username);
+
+				if (username !== null){
+					$("#msg").html("Hello, " + username);
+				}
+			});
+
+			function logout(){
+				localStorage.removeItem("username");
+				location.href = "/epd/api/v1.0/index";
+			}
+			
+		</script>
+
+	</head>
+
+	<body>
+		<div class="container" style="padding: 25px;">
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn btn-danger btn-md" onclick="logout()" style="float: right;">Logout</button><br><br>
+					<div style="border: 1px solid white;"></div><br>
+
+					<div style="border: 2px solid grey; border-radius: 10px 10px 0% 0%; padding: 5px;">
+						
+						<h1 class="form-group" id="msg">Hello World</h1><hr>
+						<h4 class="form-group">Here are your tasks:</h4>
+
+						{% for task in tasks %}
+						<div class="form-group"> Task: {{ task.title }} </div>
+						<div class="form-group"> Description: {{ task.description }} </div>
+						{% endfor %}
+
+					</div>
+				
+					
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h5 class="form-group">Here is a bonus video</h4>
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/MwZwr5Tvyxo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>	
+				</div>
+				
+			</div>
+		</div>
+
+
+		
+		
+
+	</body>
+
+</html>
