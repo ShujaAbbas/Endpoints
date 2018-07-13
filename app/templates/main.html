@@ -18,6 +18,7 @@
 
 			function logout(){
 				localStorage.removeItem("username");
+				localStorage.removeItem("token");
 				location.href = "/epd/api/v1.0/index";
 			}
 			
@@ -35,16 +36,16 @@
 					<div style="border: 2px solid grey; border-radius: 10px 10px 0% 0%; padding: 5px;">
 						
 						<h1 class="form-group" id="msg">Hello World</h1><hr>
-						<h4 class="form-group">Here are your tasks:</h4>
+						<h4 class="form-group">Here is your token:</h4>
 
-						{% for task in tasks %}
+						<!-- {% for task in tasks %}
 						<div class="form-group"> Task: {{ task.title }} </div>
 						<div class="form-group"> Description: {{ task.description }} </div>
-						{% endfor %}
+						{% endfor %} -->
+
+						<div id="token"></div>
 
 					</div>
-				
-					
 				</div>
 			</div>
 			<div class="row">
@@ -56,10 +57,9 @@
 			</div>
 		</div>
 
-
-		
-		
-
+		<script type="text/javascript">
+			$("#token").html("<b>Token: </b>" + localStorage.getItem("token"));
+		</script>
 	</body>
 
 </html>

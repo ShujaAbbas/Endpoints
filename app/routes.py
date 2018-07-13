@@ -2,15 +2,17 @@
 MAIN SERVER MODULE TO QUERY ALL THE EPD OPERATIONS
 """
 
-import json
+#import json
 import jwt
 import pyotp
 from flask import jsonify, make_response, request, render_template
-from json_response import JsonResponse
+#from json_response import JsonResponse
 from app import app
 
+_secret = "secret"
+
 @app.errorhandler(404)
-def not_found():
+def not_found(error):
     """
     Error handler for 404 - Not found
     """
@@ -36,8 +38,6 @@ def login_verification():
     Flask function to verify the login credentials through ajax call from html page
     """
 
-    _secret = "secret"
-
     try:
         username = request.json[0].get("value", "")
         user_otp = request.json[1].get("value", "")
@@ -57,7 +57,27 @@ def login_verification():
     except IndexError as error:
         print "Problem occured: {}".format(error)
         return jsonify({"result": "Please correctly fill the fields"})
-	
-@app.route("/epd/api/v1.0/main")
+
+@app.route("/epd/api/v1.0/main", methods=['POST'])
 def main_page():
-	return render_template("main.html")
+    """
+    Route to the main page after starting a session if the user is authorized
+    """
+
+    try:
+        username = request.form.get("username")
+        token = request.form.get("token")
+
+        # print "\n\nUsername: {}".format(username)
+        # print "Token: {}\n\n".format(token)
+
+        decoded_token = jwt.decode(token, _secret)
+
+        if username == decoded_token["username"]:
+            return render_template("main.html")
+        else:
+            return jsonify({"result": "Unauthorized Access"})
+
+    except Exception as error:
+        print "Error: {}".format(error)
+        return jsonify({"result": "Unauthorized Access"})

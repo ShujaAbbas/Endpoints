@@ -1,10 +1,5 @@
-@font-face {
-    font-family: princeps;
-    src: url("OptimusPrincepsSemiBold.ttf");
-}
-
 body{
-	font-family: princeps;
+	font-family: 'Roboto';
 	background-color: #f2f4f7;
 }
 

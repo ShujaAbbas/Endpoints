@@ -4,6 +4,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="/static/js/redirect.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/static/css/main.css">
 
@@ -28,16 +29,19 @@
 
 							if (json.token){
 								console.log("Trueeee");
+								console.log("Object: " + json.TOTP);
+								var username = JSON.parse(formData)[0].value;
+								var token = json.token;
 
-								localStorage.setItem("username", JSON.parse(formData)[0].value);
-								localStorage.setItem("token", json.token);
+								localStorage.setItem("username", username);
+								localStorage.setItem("token", token);
 
 								console.log("Name is: " + localStorage.getItem("username"));
 								console.log("Token is: " + localStorage.getItem("token"));
 
 								var pageURL = "/epd/api/v1.0/main";
 								console.log("Link: " + pageURL);
-								location.href = pageURL;
+								redirect(pageURL, {username: username, token: token});
 								
 								return false;
 							}else{
@@ -82,12 +86,12 @@
 			} else {
 			  	console.log("Browser Not Supported");
 			}
-			var username = localStorage.getItem("name");
+			var username = localStorage.getItem("username");
 			console.log("Direct name: " + username);
 			if (username !== null){
-				var pageURL = "/todo/api/v1.0/tasks?username="+localStorage.getItem("name");
-				console.log("Direct Link: " + pageURL);
-				location.href = pageURL;
+				var pageURL = "/epd/api/v1.0/main";
+				console.log("Link: " + pageURL);
+				redirect(pageURL, {username: username, token: token});
 			}
 		</script>
 
@@ -104,12 +108,12 @@
 						</div>
 
 						<div class="form-group">
-							<label for="otp">One Time Password</label>
+							<label for="otp">Verification Code</label>
 							<input class="form-control" type="password" name="otp" placeholder="Verification code">
 						</div>
 
 						<div class="form-group">
-							<input class="btn btn-primary btn-md" type="submit" value="Start">
+							<input class="form-control btn btn-primary btn-md" type="submit" value="Start">
 						</div>
 
 						<div class="form-group">
